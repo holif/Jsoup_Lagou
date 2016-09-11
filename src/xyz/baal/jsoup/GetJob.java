@@ -24,7 +24,7 @@ import com.csvreader.CsvWriter;
  * @author
  *
  */
-public class GetJob {
+public class GetJob implements Runnable{
 
 	private String zpUrl;// 某招聘职位对应的原始URL
 	private List<String> zpUrlList = new ArrayList<String>(); // 每个分页对应的URL
@@ -35,7 +35,7 @@ public class GetJob {
 																			// //www.lagou.com/jobs/2350451.html
 	private static final String PATH = "D:/"; // 文件存放路径
 
-	private static String jobName = "";
+	private String jobName = "";
 
 	public GetJob(String url) {
 		zpUrl = url;
@@ -176,5 +176,12 @@ public class GetJob {
 				wr.close();
 			}
 		}
+	}
+
+	@Override
+	public void run() {
+		init();
+		writeCSVFile();
+		System.out.println(jobName+"--End");
 	}
 }
