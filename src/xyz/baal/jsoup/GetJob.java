@@ -31,7 +31,7 @@ public class GetJob implements Runnable{
 	private List<String> jobUrlList = new ArrayList<String>();// 每条招聘信息对应的URL
 	private List<Job> joblist = new ArrayList<Job>();// 存放30x15条招聘信息
 
-	private static final String A_HREF = "//www.lagou.com/jobs/\\d+.html"; // href格式																			// //www.lagou.com/jobs/2350451.html
+	private static final String A_HREF = "//www.lagou.com/jobs/\\d+.html"; // href格式 //www.lagou.com/jobs/2350451.html
 	private static final String PATH = "D:/"; // 文件存放路径
 
 	private String jobName = "";//招聘职位名称
