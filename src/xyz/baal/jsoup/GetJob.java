@@ -22,7 +22,7 @@ import com.csvreader.CsvWriter;
  * 获取拉勾网某一个职位的30x15条招聘信息
  * 
  * @author
- *
+ * 
  */
 public class GetJob implements Runnable{
 
@@ -31,18 +31,24 @@ public class GetJob implements Runnable{
 	private List<String> jobUrlList = new ArrayList<String>();// 每条招聘信息对应的URL
 	private List<Job> joblist = new ArrayList<Job>();// 存放30x15条招聘信息
 
-	private static final String A_HREF = "//www.lagou.com/jobs/\\d+.html"; // href格式
-																			// //www.lagou.com/jobs/2350451.html
+	private static final String A_HREF = "//www.lagou.com/jobs/\\d+.html"; // href格式																			// //www.lagou.com/jobs/2350451.html
 	private static final String PATH = "D:/"; // 文件存放路径
 
-	private String jobName = "";
+	private String jobName = "";//招聘职位名称
 
+	/**
+	 * 
+	 * @param url 招聘职位首页url,如java、hadoop等招聘职位
+	 */
 	public GetJob(String url) {
 		zpUrl = url;
 	}
 
+	/**
+	 * 在此方法内完成某一招聘职位的450条数据抓取
+	 */
 	public void init() {
-
+		
 		// 构建30个分页URL
 		zpUrlList.add(zpUrl + "?filterOption=3");
 		for (int i = 2; i <= 30; i++) {
@@ -54,9 +60,9 @@ public class GetJob implements Runnable{
 			Document doc = null;
 			try {
 				doc = Jsoup.connect("http:" + string)
-					.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36")
-					.timeout(5000)
-					.get();
+						.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36")
+						.timeout(5000)
+						.get();
 			} catch (IOException e) {
 				continue;
 			}
@@ -88,9 +94,9 @@ public class GetJob implements Runnable{
 			Document doc = null;
 			try {
 				doc = Jsoup.connect(string)
-					.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36")
-					.timeout(5000)
-					.get();
+						.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36")
+						.timeout(5000)
+						.get();
 				job.setJobname(jobName);
 
 				Element content = doc.getElementById("container");
@@ -98,7 +104,6 @@ public class GetJob implements Runnable{
 				if (job_request != null) {
 					if (job_request.child(0) != null) {
 						job.setSalary(job_request.child(0).text());
-
 						job.setPlace(job_request.child(1).text());
 						job.setExperience(job_request.child(2).text());
 						job.setEducational(job_request.child(3).text());
@@ -110,10 +115,11 @@ public class GetJob implements Runnable{
 					continue;
 				}
 
-				Element gs = doc.getElementById("job_company").child(1);
-				if (gs != null) {
-					job.setBusiness(gs.child(0).child(0).ownText());
-					job.setStage(gs.child(2).child(0).ownText());
+				Element cpy = doc.getElementById("job_company");
+				if (cpy.childNodeSize()>=2) {
+					job.setCompany(cpy.child(0).child(0).child(0).attr("alt"));
+					job.setBusiness(cpy.child(1).child(0).child(0).ownText());
+					job.setStage(cpy.child(1).child(2).child(0).ownText());
 				} else {
 					continue;
 				}
@@ -128,8 +134,11 @@ public class GetJob implements Runnable{
 		return joblist;
 	}
 
+	/**
+	 * 将采集数据写入txt文件中
+	 */
 	public void writeTxtFile() {
-		if (joblist.size() == 0) {
+		if (joblist.size() == 0 || joblist == null) {
 			return;
 		}
 		File file = new File(PATH + joblist.get(0).getJobname() + ".txt");
@@ -160,19 +169,22 @@ public class GetJob implements Runnable{
 		}
 	}
 
+	/**
+	 * 将采集数据写入CSV文件中
+	 */
 	public void writeCSVFile() {
 		CsvWriter wr = null;
-		if (joblist.size() == 0) {
+		if (joblist.size() == 0 || joblist == null) {
 			return;
 		}
 		try {
 			String csvFilePath = PATH + joblist.get(0).getJobname() + ".csv";
 			wr = new CsvWriter(csvFilePath, ',', Charset.forName("GBK"));
-			String[] header = { "职位名称", "薪水", "工作地点", "工作经验", "学历", "公司业务", "发展阶段" };
+			String[] header = { "职位名称", "薪水", "工作地点", "工作经验", "学历", "公司名称", "公司业务", "发展阶段"};
 			wr.writeRecord(header);
 			for (Job job : joblist) {
 				String[] jobstr = { job.getJobname(), job.getSalary(), job.getPlace(), job.getExperience(),
-						job.getEducational(), job.getBusiness(), job.getStage() };
+						job.getEducational(), job.getCompany(), job.getBusiness(), job.getStage() };
 				wr.writeRecord(jobstr);
 			}
 		} catch (IOException e) {
