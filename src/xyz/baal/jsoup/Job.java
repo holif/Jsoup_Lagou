@@ -9,13 +9,14 @@ public class Job {
 	private String educational;//学历
 	private String business;//业务
 	private String stage;//发展阶段
+	private String company;//公司名称
 	
 	public Job() {
 		super();
 	}
 	
 	public Job(String jobname, String salary, String place, String experience, String educational, String business,
-			String stage) {
+			String stage, String company) {
 		super();
 		this.jobname = jobname;
 		this.salary = salary;
@@ -24,6 +25,7 @@ public class Job {
 		this.educational = educational;
 		this.business = business;
 		this.stage = stage;
+		this.company = company;
 	}
 	public String getJobname() {
 		return jobname;
@@ -67,9 +69,16 @@ public class Job {
 	public void setStage(String stage) {
 		this.stage = stage;
 	}
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
+	}
 	@Override
 	public String toString() {
 		return "Job [jobname=" + jobname + ", salary=" + salary + ", place=" + place + ", experience=" + experience
-				+ ", educational=" + educational + ", business=" + business + ", stage=" + stage + "]";
+				+ ", educational=" + educational + ", business=" + business + ", stage=" + stage + ", company="
+				+ company + "]";
 	}
 }
