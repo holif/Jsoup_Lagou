@@ -53,7 +53,10 @@ public class GetJob implements Runnable{
 		for (String string : zpUrlList) {
 			Document doc = null;
 			try {
-				doc = Jsoup.connect("http:" + string).get();
+				doc = Jsoup.connect("http:" + string)
+					.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36")
+					.timeout(5000)
+					.get();
 			} catch (IOException e) {
 				continue;
 			}
@@ -84,7 +87,10 @@ public class GetJob implements Runnable{
 			Job job = new Job();
 			Document doc = null;
 			try {
-				doc = Jsoup.connect(string).get();
+				doc = Jsoup.connect(string)
+					.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36")
+					.timeout(5000)
+					.get();
 				job.setJobname(jobName);
 
 				Element content = doc.getElementById("container");
