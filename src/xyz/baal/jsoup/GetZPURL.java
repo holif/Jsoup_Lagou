@@ -22,7 +22,10 @@ public class GetZPURL {
 
 		Document doc = null;
 		try {
-			doc = Jsoup.connect(url).get();
+			doc = Jsoup.connect(url)
+				.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36")
+				.timeout(5000)
+				.get();
 		} catch (IOException e) {
 			System.out.println("获取招聘URL失败。");
 			return;
